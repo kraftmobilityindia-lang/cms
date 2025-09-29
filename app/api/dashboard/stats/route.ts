@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { ApiResponse } from "@/types/api";
 
-export async function GET(): Promise<NextResponse<ApiResponse>> {
+export async function GET(): Promise<Response> {
   try {
     const [
       totalUsers,

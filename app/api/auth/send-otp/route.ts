@@ -4,9 +4,7 @@ import { generateOTP, getOTPExpiry } from "@/lib/otp";
 import { sendSMS } from "@/lib/sms";
 import { SendOTPRequest, ApiResponse } from "@/types/api";
 
-export async function POST(
-  request: NextRequest
-): Promise<NextResponse<ApiResponse>> {
+export async function POST(request: NextRequest): Promise<Response> {
   try {
     const { mobile }: SendOTPRequest = await request.json();
 

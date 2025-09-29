@@ -5,11 +5,11 @@ import { ApiResponse } from "@/types/api";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
-): Promise<NextResponse<ApiResponse>> {
+  context: { params: { id: string } }
+): Promise<Response> {
   try {
     const user = getUserFromRequest(request);
-    const { id } = params;
+    const { id } = context.params;
     const url = new URL(request.url);
     const forSupervisor = url.searchParams.get("supervisor") === "true";
 

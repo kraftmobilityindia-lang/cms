@@ -4,11 +4,11 @@ import { UpdateComplaintRequest, ApiResponse } from "@/types/api";
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } } // ✅ params is a plain object
-): Promise<NextResponse<ApiResponse>> {
+  context: { params: { id: string } }
+): Promise<Response> {
   // ✅ explicitly type the return
   try {
-    const { id } = params;
+    const { id } = context.params;
     const body: UpdateComplaintRequest = await request.json();
 
     const complaint = await prisma.complaint.findUnique({

@@ -4,10 +4,10 @@ import { ApiResponse } from "@/types/api";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
-): Promise<NextResponse<ApiResponse>> {
+  context: { params: { id: string } }
+): Promise<Response> {
   try {
-    const { id } = params;
+    const { id } = context.params;
 
     if (!id) {
       return NextResponse.json<ApiResponse>(

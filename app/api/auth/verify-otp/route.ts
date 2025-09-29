@@ -4,9 +4,7 @@ import { isOTPExpired } from "@/lib/otp";
 import { generateToken } from "@/lib/auth";
 import { VerifyOTPRequest, ApiResponse } from "@/types/api";
 
-export async function POST(
-  request: NextRequest
-): Promise<NextResponse<ApiResponse>> {
+export async function POST(request: NextRequest): Promise<Response> {
   try {
     const { mobile, otp }: VerifyOTPRequest = await request.json();
 
