@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import  prisma  from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { generateOTP, getOTPExpiry } from "@/lib/otp";
 import { sendSMS } from "@/lib/sms";
 import { SendOTPRequest, ApiResponse } from "@/types/api";
 
-export async function POST(request: NextRequest) {
+export async function POST(
+  request: NextRequest
+): Promise<NextResponse<ApiResponse>> {
   try {
     const { mobile }: SendOTPRequest = await request.json();
 

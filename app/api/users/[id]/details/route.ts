@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import  prisma  from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { ApiResponse } from "@/types/api";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
-) {
+): Promise<NextResponse<ApiResponse>> {
   try {
     const { id } = params;
 

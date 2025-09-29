@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import  prisma  from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { UpdateUserRequest, ApiResponse } from "@/types/api";
 
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
-) {
+): Promise<NextResponse<ApiResponse>> {
   try {
     const { id } = params;
     const body: UpdateUserRequest = await request.json();

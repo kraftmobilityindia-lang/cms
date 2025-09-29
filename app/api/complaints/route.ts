@@ -3,7 +3,7 @@ import  prisma  from "@/lib/prisma";
 import { getUserFromRequest } from "@/lib/auth";
 import { CreateComplaintRequest, ApiResponse } from "@/types/api";
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse<ApiResponse>> {
   try {
     const user = getUserFromRequest(request);
     if (!user) {

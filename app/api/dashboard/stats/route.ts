@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import  prisma  from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { ApiResponse } from "@/types/api";
 
-export async function GET() {
+export async function GET(): Promise<NextResponse<ApiResponse>> {
   try {
     const [
       totalUsers,

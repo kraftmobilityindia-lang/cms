@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import  prisma  from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { CreateUserRequest, ApiResponse } from "@/types/api";
 
-export async function POST(request: NextRequest) {
+export async function POST(
+  request: NextRequest
+): Promise<NextResponse<ApiResponse>> {
   try {
     const body: CreateUserRequest = await request.json();
     const {
