@@ -1,0 +1,181 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model for tenants
+model User {
+  id        String   @id @default(cuid())
+  mobile    String   @unique
+  name      String?
+  email     String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Image     String?
+
+  // Relationship with property
+  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId String
+
+  // Relationship with complaints
+  complaints Complaint[]
+
+  // OTP related fields
+  otpCode    String?
+  otpExpiry  DateTime?
+  isVerified Boolean   @default(false)
+
+  @@map("users")
+}
+
+// Property model
+model Property {
+  id          String @id @default(cuid())
+  address     String
+  fullAddress String
+  city        String
+  state       String
+  pincode     String
+
+  // Property details
+  bedrooms      Int     @default(0)
+  bathrooms     Int     @default(0)
+  hasLivingArea Boolean @default(false)
+  hasDiningArea Boolean @default(false)
+  hasKitchen    Boolean @default(true)
+  hasUtility    Boolean @default(false)
+  hasGarden     Boolean @default(false)
+  hasPowderRoom Boolean @default(false)
+
+  // Additional property info
+  propertyType String? // apartment, house, etc.
+  area         Float? // in sq ft
+  floor        Int?
+  totalFloors  Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  users      User[]
+  complaints Complaint[]
+
+  @@map("properties")
+}
+
+// Main complaint model
+model Complaint {
+  id          String            @id @default(cuid())
+  title       String?
+  description String
+  category    ComplaintCategory
+  status      ComplaintStatus   @default(OPEN)
+  priority    Priority          @default(MEDIUM)
+
+  // User uploaded media (issue photos/videos)
+  issueImages String[] // User's photos of the problem
+  issueVideos String[] // User's videos of the problem
+
+  // Supervisor uploaded media (work proof)
+  beforeImages String[] // Before work photos
+  afterImages  String[] // After work photos
+  beforeVideos String[] // Before work videos
+  afterVideos  String[] // After work videos
+
+  // Work details (filled by supervisor)
+  workDescription String? // What work was done
+  materialsUsed   String? // Materials used for repair
+  workNotes       String? // Additional supervisor notes
+
+  // Timestamps
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  startedAt  DateTime? // When supervisor started work
+  resolvedAt DateTime? // When supervisor marked as resolved
+  closedAt   DateTime? // When admin closed the ticket
+
+  // Relationships
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId String
+
+  @@map("complaints")
+}
+
+// Simple OTP tracking
+model OTP {
+  id        String   @id @default(cuid())
+  mobile    String
+  code      String
+  expiresAt DateTime
+  isUsed    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("otps")
+}
+
+// Optional: For better file management
+model MediaFile {
+  id           String   @id @default(cuid())
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int // in bytes
+  url          String
+  uploadedBy   String // USER or SUPERVISOR
+  complaintId  String // Related complaint
+  fileType     String // ISSUE, BEFORE_WORK, AFTER_WORK
+  createdAt    DateTime @default(now())
+
+  @@map("media_files")
+}
+
+// App configuration
+model AppConfig {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt
+
+  @@map("app_config")
+}
+
+// Enums
+enum ComplaintCategory {
+  ELECTRICAL
+  PLUMBING
+  ELECTRONICS
+  CARPENTRY
+  STRUCTURAL
+  OTHER
+
+  @@map("complaint_category")
+}
+
+enum ComplaintStatus {
+  OPEN // User created complaint
+  IN_PROGRESS // Supervisor started work
+  RESOLVED // Supervisor completed work
+  CLOSED // Admin verified and closed
+  CANCELLED // Admin cancelled
+
+  @@map("complaint_status")
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+
+  @@map("priority")
+}
