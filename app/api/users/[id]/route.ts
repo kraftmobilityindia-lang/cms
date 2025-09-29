@@ -4,10 +4,10 @@ import { UpdateUserRequest, ApiResponse } from "@/types/api";
 
 export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ): Promise<Response> {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
     const body: UpdateUserRequest = await request.json();
 
     const user = await prisma.user.findUnique({
